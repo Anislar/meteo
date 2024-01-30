@@ -1,10 +1,10 @@
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import Card from "./components/Card";
 import SearchBar from "./components/search-bar";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 function App() {
-  const weather_status = "rainy";
+  const [weather_status, setState] = useState("rainy");
   const array = [
     {
       title: "Uv index",
@@ -50,7 +50,21 @@ function App() {
       bg = "/assets/backgrounds/background_mostly_sunny.png";
 
     return bg;
-  }, []);
+  }, [weather_status]);
+
+  const image = useMemo(() => {
+    let bg = "";
+    if (weather_status === "rainy")
+      bg = "/assets/weather-types/rainy_desktop.png";
+    else if (weather_status === "cloudy")
+      bg = "/assets/weather-types/cloud_desktop.png";
+    else if (weather_status === "sunny")
+      bg = "/assets/weather-types/sunny_desktop.png";
+    else if (weather_status === "mostly_sunny")
+      bg = "/assets/weather-types/mostly_sunny_desktop.png";
+
+    return bg;
+  }, [weather_status]);
   return (
     <div
       style={{
@@ -63,36 +77,58 @@ function App() {
         md:justify-normal  justify-center
       
       w-full items-center p-10 flex flex-col ">
-      <SearchBar />
+      <SearchBar handleChange={setState} />
       <div className=" flex-col justify-center gap-x-10 md:flex-row flex  w-full">
         <div className=" items-center  flex flex-col ">
-          <p className=" text-2xl text-white">
+          <p
+            className={`text-2xl ${
+              weather_status === "mostly_sunny" ? "text-black" : "text-white"
+            }`}>
             Thursday, 21 January 2021 <br />
           </p>
-          <Card
-            onlyImage={true}
-            image={"assets/weather-types/cloud_desktop.png"}
-          />
+          <Card onlyImage={true} image={image} />
           <div className="flex flex-col space-y-5">
-            <span className=" text-6xl mt-1 text-white">
-              16° C <br />
+            <span
+              className={`text-6xl mt-1 ${
+                weather_status === "mostly_sunny" ? "text-black" : "text-white"
+              }`}>
+              {weather_status === "rainy"
+                ? "5"
+                : weather_status === "cloudy"
+                ? "16"
+                : weather_status === "sunny"
+                ? "22"
+                : "14"}
+              ° C <br />
             </span>
-            <span className=" text-4xl text-white">
-              Cloudy <br />
+            <span
+              className={` text-6xl ${
+                weather_status === "mostly_sunny" ? "text-black" : "text-white"
+              }`}>
+              {weather_status !== "mostly_sunny"
+                ? weather_status
+                : "Mostly sunny"}{" "}
+              <br />
             </span>
 
-            <div className=" flex items-center text-white  text-lg space-x-4">
+            <div
+              className={`flex items-center w-full text-center ${
+                weather_status === "mostly_sunny" ? "text-black" : "text-white"
+              }  text-lg space-x-4`}>
               <div className="flex items-center">
-                <ArrowUpOutlined /> <kbd>22°C</kbd> <br />
+                <ArrowUpOutlined /> <kbd>22°C</kbd>
               </div>
               <div className="flex items-center">
-                <ArrowDownOutlined /> <kbd> 12°C</kbd> <br />
+                <ArrowDownOutlined /> <kbd> 12°C</kbd>
               </div>
             </div>
           </div>
         </div>
         <div className=" justify-start  flex flex-col ">
-          <p className=" text-2xl text-white">
+          <p
+            className={`text-2xl ${
+              weather_status === "mostly_sunny" ? "text-black" : "text-white"
+            }`}>
             {"Today's highlists"} <br />
           </p>
           <div className=" grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3 ">
